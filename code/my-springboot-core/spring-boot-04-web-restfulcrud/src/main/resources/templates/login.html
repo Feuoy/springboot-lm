@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+
+
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+
+    <title>Signin Template for Bootstrap</title>
+
+
+    <!--项目下/asserts的bootstrap-->
+    <!--<link href="asserts/css/bootstrap.min.css" rel="stylesheet">-->
+    <!--不知道为什么之前不能用配置包下的。现在又可以了 -->
+    <!--这个是配置包下的：org\webjars\bootstrap\4.0.0\bootstrap-4.0.0.jar!\META-INF\resources\webjars\bootstrap\4.0.0\css\bootstrap.css-->
+    <!--模板引擎跳转th:href=     取路径@{/webjars/bootstrap/4.0.0/css/bootstrap.css}-->
+    <!-- css用href取外部css -->
+    <link href="asserts/css/bootstrap.min.css" th:href="@{/webjars/bootstrap/4.0.0/css/bootstrap.css}" rel="stylesheet">
+
+
+    <!-- Custom styles for this template -->
+    <!--为开发者可以自定义的css路径-->
+    <link href="asserts/css/signin.css" th:href="@{/asserts/css/signin.css}" rel="stylesheet">
+
+
+</head>
+
+
+<body class="text-center">
+
+
+<!--th:action=到@{/user/login}来验证登录-->
+<!--method="post"方式-->
+<form class="form-signin" action="dashboard.html" th:action="@{/user/login}" method="post">
+
+
+    <!--th:src=""来取图片更方便，    @{/asserts/img/bootstrap-solid.svg}根路径是/static等-->
+    <!--alt=""用空来代替图片-->
+    <img class="mb-4" th:src="@{/asserts/img/bootstrap-solid.svg}" src="asserts/img/bootstrap-solid.svg" alt=""
+         width="72" height="72">
+
+
+    <!--th:text=来写内容取代<h1></h1>里的内容   #{login.tip}来取值-->
+    <h1 class="h3 mb-3 font-weight-normal" th:text="#{login.tip}">Please sign in</h1>
+
+
+    <!--${msg}提示语直接用强调“值”-->
+    <!--th:if=判断显示与否    ${not #strings.isEmpty(msg)}来：算{非 取strings.(是空？)}-->
+    <p style="color: red" th:text="${msg}" th:if="${not #strings.isEmpty(msg)}"></p>
+
+
+    <!--#{login.username}有变量的用强调“对象”-->
+    <label class="sr-only" th:text="#{login.username}">Username</label>
+
+
+    <!--th:placeholder="#{login.username}"输入提示-->
+    <input type="text" name="username" class="form-control" placeholder="Username" th:placeholder="#{login.username}"
+           required="" autofocus="">
+
+
+    <label class="sr-only" th:text="#{login.password}">Password</label>
+    <input type="password" name="password" class="form-control" placeholder="Password"
+           th:placeholder="#{login.password}" required="">
+
+
+    <!--[[#{login.remember}]]，直接写的行内写法要加两层中括号-->
+    <div class="checkbox mb-3">
+        <label>
+            <input type="checkbox" value="remember-me"> [[#{login.remember}]]
+        </label>
+    </div>
+
+
+    <button class="btn btn-lg btn-primary btn-block" type="submit" th:text="#{login.btn}">Sign in</button>
+
+
+    <p class="mt-5 mb-3 text-muted">© 2017-2018</p>
+
+
+    <!--跳转，代表首页，设置(l='zh_CN')-->
+    <a class="btn btn-sm" th:href="@{/index.html(l='zh_CN')}">中文</a>
+    <a class="btn btn-sm" th:href="@{/index.html(l='en_US')}">English</a>
+</form>
+
+
+</body>
+</html>

@@ -1,0 +1,10 @@
+# ContextInitializer
+org.springframework.context.ApplicationContextInitializer=\
+com.feuoy.listener.HelloApplicationContextInitializer
+
+# RunListener
+org.springframework.boot.SpringApplicationRunListener=\
+com.feuoy.listener.HelloSpringApplicationRunListener
+
+# 创建错项目名了
+#com.feuoy.springboot.listener.HelloSpringApplicationRunListener

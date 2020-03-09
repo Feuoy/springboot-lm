@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+
+
+<!-- saved from url=(0052)http://getbootstrap.com/docs/4.0/examples/dashboard/ -->
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+
+    <title>Dashboard Template for Bootstrap</title>
+
+
+    <!-- Bootstrap core CSS -->
+    <link href="asserts/css/bootstrap.min.css" th:href="@{/webjars/bootstrap/4.0.0/css/bootstrap.css}" rel="stylesheet">
+
+
+    <!-- Custom styles for this template -->
+    <link href="asserts/css/dashboard.css" th:href="@{/asserts/css/dashboard.css}" rel="stylesheet">
+
+
+    <style type="text/css">
+        /* Chart.js */
+
+        @-webkit-keyframes chartjs-render-animation {
+            from {
+                opacity: 0.99
+            }
+            to {
+                opacity: 1
+            }
+        }
+
+        @keyframes chartjs-render-animation {
+            from {
+                opacity: 0.99
+            }
+            to {
+                opacity: 1
+            }
+        }
+
+        .chartjs-render-monitor {
+            -webkit-animation: chartjs-render-animation 0.001s;
+            animation: chartjs-render-animation 0.001s;
+        }
+    </style>
+</head>
+
+
+<body>
+
+
+<div th:replace="commons/bar::topbar"></div>
+
+
+<div class="container-fluid">
+    <div class="row">
+
+
+        <div th:replace="~{commons/bar::#sidebar(activeUri='emps')}"></div>
+
+
+        <!--<main> 标签规定文档的主要内容。-->
+        <!--<main> 元素中的内容对于文档来说应当是唯一的。它不应包含在文档中重复出现的内容，比如侧栏、导航栏、版权信息、站点标志或搜索表单。-->
+        <main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
+
+
+            <!--这是一个员工添加和修改的二合一表单-->
+            <!--需要区分是员工修改还是添加！-->
+            <form th:action="@{/emp}" method="post">
+
+
+                <!--
+                1、SpringMVC中配置HiddenHttpMethodFilter（SpringBoot自动配置好的）
+				2、页面创建一个post表单
+				3、创建一个input项，name="_method"
+				4、value="put"值就是我们指定的请求方式
+				-->
+
+
+                <!--_method-->
+                <!--如果emp存在，那么是修改，value是put方式-->
+                <!--如果不存在，这行不起作用-->
+                <input type="hidden" name="_method" value="put" th:if="${emp!=null}"/>
+
+
+                <!--id-->
+                <!--如果emp存在，那么是修改，值是这个员工的ID：${emp.id}-->
+                <!--如果不存在，这行不起作用，数据库id主键设置了自增-->
+                <!--而且这是一个不用填的隐藏字段-->
+                <input type="hidden" name="id" th:value="${emp.id}" th:if="${emp!=null}"/>
+
+
+                <!--lastName-->
+                <!--简化写法，三目运算符，	th:value="${emp!=null}?${emp.lastName}"-->
+                <!--如果emp存在，那么值是这个员工的lastName：${emp.lastName}-->
+                <!--如果不存在，值是输入的，不用在这里写value-->
+                <div class="form-group">
+                    <label>LastName</label>
+                    <input name="lastName" type="text" class="form-control" placeholder="zhangsan"
+                           th:value="${emp!=null}?${emp.lastName}">
+                </div>
+
+
+                <!--email-->
+                <div class="form-group">
+                    <label>Email</label>
+                    <input name="email" type="email" class="form-control" placeholder="zhangsan@atguigu.com"
+                           th:value="${emp!=null}?${emp.email}">
+                </div>
+
+
+                <!--gender-->
+                <!--1代表男，0代表女-->
+                <!--如果emp存在，用${emp.gender==1}来判断布尔值，如果是true，那么th:checked="true"这个选项也就被选上-->
+                <!--如果不存在，值是让用户选择的，不用在这里写value-->
+                <div class="form-group">
+                    <label>Gender</label><br/>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="gender" value="1"
+                               th:checked="${emp!=null}?${emp.gender==1}">
+                        <label class="form-check-label">男</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="gender" value="0"
+                               th:checked="${emp!=null}?${emp.gender==0}">
+                        <label class="form-check-label">女</label>
+                    </div>
+                </div>
+
+
+                <!--department.id-->
+                <!--提交的是部门的id-->
+                <!--th:each="dept:${depts}"		遍历传入的depts，每个的名字是dept-->
+                <!--th:value="${dept.id}"		意义值是每个dept.id-->
+                <!--th:text="${dept.departmentName}"		显示值是每个dept.departmentName-->
+                <!--th:selected="${emp!=null}?${dept.id == emp.department.id}"		如果emp存在，那么是修改的情况，判断这个员工的部门id，是不是这个dept.id选项的，是的话这个选项被选上-->
+                <div class="form-group">
+                    <label>department</label>
+                    <select class="form-control" name="department.id">
+                        <option th:each="dept:${depts}"
+                                th:value="${dept.id}"
+                                th:text="${dept.departmentName}"
+                                th:selected="${emp!=null}?${dept.id == emp.department.id}">
+                            1（这个1不显示，被上面的th:text覆盖）
+                        </option>
+                    </select>
+                </div>
+
+
+                <!--birth-->
+                <!--${#dates.format(emp.birth, 'yyyy-MM-dd HH:mm')}格式化-->
+                <div class="form-group">
+                    <label>Birth</label>
+                    <input name="birth" type="text" class="form-control" placeholder="zhangsan"
+                           th:value="${emp!=null}?${#dates.format(emp.birth, 'yyyy-MM-dd HH:mm')}">
+                </div>
+
+
+                <!--如果emp存在，那么显示修改-->
+                <button type="submit" class="btn btn-primary" th:text="${emp!=null}?'修改':'添加'">添加</button>
+            </form>
+
+
+        </main>
+    </div>
+</div>
+
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script type="text/javascript" src="../../static/asserts/js/jquery-3.2.1.slim.min.js"></script>
+<script type="text/javascript" src="../../static/asserts/js/popper.min.js"></script>
+<script type="text/javascript" src="../../static/asserts/js/bootstrap.min.js"></script>
+
+
+<!-- Icons -->
+<script type="text/javascript" src="../../static/asserts/js/feather.min.js"></script>
+<script>
+    feather.replace()
+</script>
+
+
+</body>
+</html>

@@ -1,0 +1,10 @@
+// do not know
+{
+  "properties": [
+    {
+      "name": "person.dog.name",
+      "type": "java.lang.String",
+      "description": "Description for person.dog.name."
+    }
+  ]
+}
